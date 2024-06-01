@@ -2,10 +2,8 @@
 <#
 .SYNOPSIS
 Muestra un menú de opciones para la administración del data center.
-
 .DESCRIPTION
 Este script muestra un menú interactivo que permite al usuario seleccionar diferentes opciones para administrar el data center.
-
 .PARAMETER Title
 Título para el menú. Por defecto es 'ADMINISTRACIÓN DEL DATA CENTER'.
 #>
@@ -31,7 +29,6 @@ function Show-Menu {
 <#
 .SYNOPSIS
 Obtiene los cinco procesos que más CPU están consumiendo en ese momento.
-
 .DESCRIPTION
 Get-TopCPUProcesses utiliza el cmdlet Get-Process para obtener una lista de procesos en el sistema, 
 luego los ordena según el uso de CPU en orden descendente y selecciona los primeros cinco procesos. 
@@ -46,16 +43,13 @@ function Get-TopCPUProcesses {
 <#
 .SYNOPSIS
 Obtiene información sobre los filesystems o discos conectados a la máquina.
-
 .DESCRIPTION
 Get-FileSystemsDisk utiliza WMI para consultar las instancias Win32_LogicalDisk en una máquina especificada por el parámetro ComputerName. 
 Filtra los resultados para incluir solo los discos duros y unidades de red (DriveType 2 o 3). 
 Luego, muestra el ID del dispositivo, el tamaño total del disco y el espacio libre en bytes.
-
 .PARAMETER ComputerName
 Nombre del computador del cual se desea obtener la información de los discos. 
 El valor predeterminado es 'localhost'.
-
 .EXAMPLE
 Get-FileSystemsDisk -ComputerName server1
 #>
@@ -73,15 +67,12 @@ function Get-FileSystemsDisk {
 <#
 .SYNOPSIS
 Obtiene el nombre y el tamaño del archivo más grande almacenado en un disco o filesystem.
-
 .DESCRIPTION
 Get-LargestFile busca en un directorio especificado y sus subdirectorios para encontrar el archivo más grande. 
 Si el directorio especificado no existe o no contiene archivos, muestra un mensaje de error.
 Muestra el nombre del archivo, el tamaño en bytes y la ruta completa.
-
 .PARAMETER Path
 Ruta del directorio en el cual se desea buscar el archivo más grande. Este parámetro es obligatorio.
-
 .EXAMPLE
 Get-LargestFile -Path C:\Users\Documents
 #>
@@ -120,7 +111,6 @@ function Get-LargestFile {
 <#
 .SYNOPSIS
 Obtiene la cantidad de memoria libre y la cantidad de espacio de swap en uso.
-
 .DESCRIPTION
 Get-MemorySwapInfo utiliza WMI para obtener información sobre la memoria física libre y el uso del espacio de swap en el sistema. 
 Calcula tanto la cantidad como el porcentaje de memoria libre y espacio de swap en uso, 
@@ -152,7 +142,6 @@ function Get-MemorySwapInfo {
 <#
 .SYNOPSIS
 Obtiene el número de conexiones de red activas actualmente en estado ESTABLISHED.
-
 .DESCRIPTION
 Get-NetworkConnections utiliza el cmdlet Get-NetTCPConnection para obtener todas las conexiones TCP en el sistema 
 y filtra aquellas que están en estado ESTABLISHED. Luego, cuenta el número de estas conexiones y devuelve el resultado.
@@ -165,7 +154,6 @@ function Get-NetworkConnections {
 <#
 .SYNOPSIS
 Proporciona un menú interactivo para ejecutar varios scripts de administración del data center.
-
 .DESCRIPTION
 Este script muestra un menú de opciones para realizar diferentes tareas de administración del data center.
 El usuario puede seleccionar una opción y el script ejecutará la tarea correspondiente. 
