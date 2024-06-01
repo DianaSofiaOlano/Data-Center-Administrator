@@ -34,7 +34,40 @@ function Get-FileSystems-Disk {
     @{n='Espacio Libre (Bytes)'; e={$_.FreeSpace}} | Format-Table
 }
 
+function Get-LargestFile {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $True)]
+        [string]$Path
+    )
 
+    #El Test-Path cmdlet determina si existen todos los elementos de la ruta de acceso.
+    if (Test-Path $Path) {
+        # Obtener todos los archivos en el directorio y subdirectorios
+        $Files = Get-ChildItem -Path $Path -Recurse -File
+
+        # Verificar si hay archivos en el directorio
+        if ($Files.Count -ne 0) {
+            # Encontrar el archivo más grande
+            $LargestFile = $Files | Sort-Object -Property Length -desc | Select-Object -First 1
+
+            Write-Host ""
+            Write-Host "Nombre: $($LargestFile.Name)"
+            Write-Host "Tamaño (Bytes): $($LargestFile.Length)"
+            Write-Host "Ruta: $($LargestFile.FullName)"
+        }
+        else{
+            Write-Host ""
+            Write-Host "No se encontraron archivos en el directorio especificado."
+            return
+        }
+    }
+    else {
+        Write-Host ""
+        Write-Host "El directorio especificado no existe."
+        return
+    }
+}
 
 
 do {
@@ -58,6 +91,7 @@ do {
         3 {
             cls
             Write-Host "=========Archivo más grande========="
+            Get-LargestFile
             break
         }
         4 {
