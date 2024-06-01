@@ -19,7 +19,7 @@
 
 function Get-TopCPUProcesses {
    Get-Process | Sort-Object -Property CPU -desc | Select-Object -First 5 | 
-   Format-Table -Property Id, ProcessName, CPU -AutoSize
+   Select-Object -Property Id, ProcessName, CPU
 }
 
 function Get-FileSystemsDisk {
@@ -29,8 +29,8 @@ function Get-FileSystemsDisk {
 
     Get-WmiObject -Class Win32_logicaldisk -ComputerName $ComputerName |
     Where-Object {$_.DriveType -eq 2 -or $_.DriveType -eq 3} |
-    Format-Table -Property DeviceID, @{n='Tamaño (Bytes)'; e={$_.Size / 1 -as [int64]}}, 
-    @{n='Espacio Libre (Bytes)'; e={$_.FreeSpace / 1 -as [int64]}} -AutoSize
+    Select-Object -Property DeviceID, @{n='Tamaño(Bytes)'; e={$_.Size / 1 -as [int64]}}, 
+    @{n='Espacio Libre(Bytes)'; e={$_.FreeSpace / 1 -as [int64]}}
 }
 
 function Get-LargestFile {
@@ -48,12 +48,8 @@ function Get-LargestFile {
         # Verificar si hay archivos en el directorio
         if ($Files.Count -ne 0) {
             # Encontrar el archivo más grande
-            $LargestFile = $Files | Sort-Object -Property Length -desc | Select-Object -First 1 
-
-            Write-Host ""
-            Write-Host "Nombre: $($LargestFile.Name)"
-            Write-Host "Tamaño (Bytes): $($LargestFile.Length / 1 -as [int64])"
-            Write-Host "Ruta: $($LargestFile.FullName)"
+            $LargestFile = $Files | Sort-Object -Property Length -desc | Select-Object -First 1
+            $LargestFile | Select-Object Name, @{n='Tamaño(Bytes)';e={$_.Length / 1 -as [int64]}}, FullName
         }
         else{
             Write-Host ""
@@ -73,25 +69,26 @@ function Get-MemorySwapInfo {
     $SwapInformation = Get-WmiObject -Class Win32_PageFileUsage
 
     #Obtener información de memoria
-    $TotalMemory = $SystemInformation.TotalVisibleMemorySize
     $FreeMemory = $SystemInformation.FreePhysicalMemory / 1 -as [int64]
-    $FreeMemoryPercentage = [Math]::Round(($FreeMemory / $TotalMemory) * 100, 2)
+    $FreeMemoryPercentage = (($SystemInformation.FreePhysicalMemory / $SystemInformation.TotalVisibleMemorySize) * 100 -as [int])
 
     #Obtener información de swap
-    $TotalSwap = $SwapInformation.AllocatedBaseSize
     $SwapUsage = $SwapInformation.CurrentUsage / 1 -as [int64]
-    $SwapUsagePercentage = [Math]::Round(($SwapUsage / $TotalSwap) * 100, 2)
+    $SwapUsagePercentage = (($SwapInformation.CurrentUsage / $SwapInformation.AllocatedBaseSize) * 100 -as [int])
 
-    Write-Host ""
-    Write-Host "Memoria libre: $($FreeMemory)"
-    Write-Host "Porcentaje de Memoria libre: $($FreeMemoryPercentage.ToString("F2"))%"
-    Write-Host "Espacio de Swap en uso: $($SwapUsage)"
-    Write-Host "Porcentaje de espacio de Swap en uso: $($SwapUsagePercentage.ToString("F2"))%"
+    # Crear un objeto personalizado
+    $MemoryInfo = [PSCustomObject]@{
+        FreeMemory = $FreeMemory
+        FreeMemoryPercentage = "$FreeMemoryPercentage%"
+        SwapUsage = $SwapUsage
+        SwapUsagePercentage = "$SwapUsagePercentage%"
+    }
+    return $MemoryInfo
 }
 
 function Get-NetworkConnections {
     Get-NetTCPConnection | Where-Object {$_.State -eq "Established"} | Measure-Object | 
-    Format-Table -Property @{n="Número de Conexiones con estado ESTABLISHED"; e={$_.Count};Alignment="Center"} -AutoSize
+    Select-Object -Property @{n="Número de Conexiones con estado ESTABLISHED"; e={$_.Count}}
 }
 
 do {
@@ -103,31 +100,31 @@ do {
         1 {
             cls
             Write-Host "=========Top 5 procesos por CPU=========" -ForegroundColor Yellow
-            Get-TopCPUProcesses
+            Get-TopCPUProcesses | Format-Table -AutoSize
             break
         }
         2 {
             cls
             Write-Host "=========Filesystems y discos=========" -ForegroundColor Yellow
-            Get-FileSystemsDisk
+            Get-FileSystemsDisk | Format-Table -AutoSize
             break
         }
         3 {
             cls
             Write-Host "=========Archivo más grande=========" -ForegroundColor Yellow
-            Get-LargestFile
+            Get-LargestFile | Format-List
             break
         }
         4 {
             cls
             Write-Host "=========Memoria y swap=========" -ForegroundColor Yellow
-            Get-MemorySwapInfo
+            Get-MemorySwapInfo | Format-List
             break
         }
         5 {
             cls
             Write-Host "=========Conexiones de red=========" -ForegroundColor Yellow
-            Get-NetworkConnections
+            Get-NetworkConnections | Format-List
             break
         }
         0 {
