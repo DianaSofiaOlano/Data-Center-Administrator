@@ -4,9 +4,9 @@
      )
 
      cls
-     Write-Host "=================================="
+     Write-Host "==================================" -ForegroundColor Magenta
      Write-Host "  $Title  " -ForegroundColor Cyan
-     Write-Host "=================================="
+     Write-Host "==================================" -ForegroundColor Magenta
      Write-Host ""
      Write-Host "1. Desplegar los cinco procesos que más CPU estén consumiendo en ese momento"
      Write-Host "2. Desplegar los filesystems o discos conectados a la máquina"
@@ -17,13 +17,12 @@
      Write-Host ""
 }
 
-function Get-Top-CPU-Processes {
+function Get-TopCPUProcesses {
    Get-Process | Sort-Object -Property CPU -desc | Select-Object -First 5 | 
    Format-Table -Property Id, ProcessName, CPU -AutoSize
-
 }
 
-function Get-FileSystems-Disk {
+function Get-FileSystemsDisk {
     param (
         $ComputerName = 'localhost'
     )
@@ -58,18 +57,18 @@ function Get-LargestFile {
         }
         else{
             Write-Host ""
-            Write-Host "No se encontraron archivos en el directorio especificado."
+            Write-Host "No se encontraron archivos en el directorio especificado." -ForegroundColor Red -BackgroundColor Black
             return
         }
     }
     else {
         Write-Host ""
-        Write-Host "El directorio especificado no existe."
+        Write-Host "El directorio especificado no existe." -ForegroundColor Red -BackgroundColor Black
         return
     }
 }
 
-function Get-Memory-Swap-Info {
+function Get-MemorySwapInfo {
     $SystemInformation = Get-WmiObject -Class Win32_OperatingSystem
     $SwapInformation = Get-WmiObject -Class Win32_PageFileUsage
 
@@ -103,41 +102,43 @@ do {
     switch ($option) {
         1 {
             cls
-            Write-Host "=========Top 5 procesos por CPU========="
-            Get-Top-CPU-Processes
+            Write-Host "=========Top 5 procesos por CPU=========" -ForegroundColor Yellow
+            Get-TopCPUProcesses
             break
         }
         2 {
             cls
-            Write-Host "=========Filesystems y discos========="
-            Get-FileSystems-Disk
+            Write-Host "=========Filesystems y discos=========" -ForegroundColor Yellow
+            Get-FileSystemsDisk
             break
         }
         3 {
             cls
-            Write-Host "=========Archivo más grande========="
+            Write-Host "=========Archivo más grande=========" -ForegroundColor Yellow
             Get-LargestFile
             break
         }
         4 {
             cls
-            Write-Host "=========Memoria y swap========="
-            Get-Memory-Swap-Info
+            Write-Host "=========Memoria y swap=========" -ForegroundColor Yellow
+            Get-MemorySwapInfo
             break
         }
         5 {
             cls
-            Write-Host "=========Conexiones de red========="
+            Write-Host "=========Conexiones de red=========" -ForegroundColor Yellow
             Get-NetworkConnections
             break
         }
         0 {
             cls
-            Write-Host "=========Saliendo========="
+            Write-Host "==================================" -ForegroundColor Magenta
+            Write-Host "            Saliendo              " -ForegroundColor Cyan
+            Write-Host "==================================" -ForegroundColor Magenta
             break
         }
         default {
-            Write-Host "Opción no válida. Intente de nuevo."
+            Write-Host "Opción no válida. Intente de nuevo." -ForegroundColor Red -BackgroundColor Black
             break
         }
     }
