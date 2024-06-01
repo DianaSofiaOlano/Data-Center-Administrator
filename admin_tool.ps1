@@ -1,19 +1,19 @@
 ﻿function Show-Menu
 {
      param (
-        [string]$Title = 'Administración del Data Center'
+        [string]$Title = 'ADMINISTRACIÓN DEL DATA CENTER'
      )
 
      cls
      Write-Host "=================================="
-     Write-Host "  $Title  "
+     Write-Host "  $Title  " -ForegroundColor Cyan
      Write-Host "=================================="
      Write-Host ""
-     Write-Host "1. Mostrar los cinco procesos de mayor consumo de CPU"
-     Write-Host "2. Mostrar discos y sus tamaños, incluyendo espacio libre"
-     Write-Host "3. Mostrar nombre, tamaño y trayectoria del archivo más grande"
-     Write-Host "4. Mostrar memoria libre y uso de swap"
-     Write-Host "5. Mostrar conexiones de red activas (ESTABLISHED)"
+     Write-Host "1. Desplegar los cinco procesos que más CPU estén consumiendo en ese momento"
+     Write-Host "2. Desplegar los filesystems o discos conectados a la máquina"
+     Write-Host "3. Desplegar el nombre y el tamaño del archivo más grande almacenado en un disco o filesystem"
+     Write-Host "4. Cantidad de memoria libre y cantidad del espacio de swap en uso"
+     Write-Host "5. Número de conexiones de red activas actualmente (en estado ESTABLISHED)"
      Write-Host "0. Salir"
      Write-Host ""
 }
@@ -30,8 +30,8 @@ function Get-FileSystems-Disk {
 
     Get-WmiObject -Class Win32_logicaldisk -ComputerName $ComputerName |
     Where-Object {$_.DriveType -eq 2 -or $_.DriveType -eq 3} |
-    Select-Object -Property DeviceID, @{n='Tamaño (Bytes)'; e={$_.Size}}, 
-    @{n='Espacio Libre (Bytes)'; e={$_.FreeSpace}} | Format-Table
+    Select-Object -Property DeviceID, @{n='Tamaño (Bytes)'; e={$_.Size / 1 -as [int64]}}, 
+    @{n='Espacio Libre (Bytes)'; e={$_.FreeSpace / 1 -as [int64]}} | Format-Table
 }
 
 function Get-LargestFile {
@@ -53,7 +53,7 @@ function Get-LargestFile {
 
             Write-Host ""
             Write-Host "Nombre: $($LargestFile.Name)"
-            Write-Host "Tamaño (Bytes): $($LargestFile.Length)"
+            Write-Host "Tamaño (Bytes): $($LargestFile.Length / 1 -as [int64])"
             Write-Host "Ruta: $($LargestFile.FullName)"
         }
         else{
@@ -67,6 +67,26 @@ function Get-LargestFile {
         Write-Host "El directorio especificado no existe."
         return
     }
+}
+
+function Get-Memory-Swap-Info {
+    $SystemInformation = Get-WmiObject -Class Win32_OperatingSystem
+    $SwapInformation = Get-WmiObject -Class Win32_PageFileUsage
+
+    #Obtener información de memoria
+    $TotalMemory = $SystemInformation.TotalVisibleMemorySize
+    $FreeMemory = $SystemInformation.FreePhysicalMemory / 1 -as [int64]
+    $FreeMemoryPercentage = [Math]::Round(($FreeMemory / $TotalMemory) * 100, 2)
+
+    #Obtener información de swap
+    $TotalSwap = $SwapInformation.AllocatedBaseSize
+    $SwapUsage = $SwapInformation.CurrentUsage / 1 -as [int64]
+    $SwapUsagePercentage = [Math]::Round(($SwapUsage / $TotalSwap) * 100, 2)
+
+    Write-Host "Memoria libre: $($FreeMemory)"
+    Write-Host "Porcentaje de Memoria libre: $($FreeMemoryPercentage.ToString("F2"))%"
+    Write-Host "Espacio de Swap en uso: $($SwapUsage)"
+    Write-Host "Porcentaje de espacio de Swap en uso: $($SwapUsagePercentage.ToString("F2"))%"
 }
 
 
@@ -97,6 +117,7 @@ do {
         4 {
             cls
             Write-Host "=========Memoria y swap========="
+            Get-Memory-Swap-Info
             break
         }
         5 {
