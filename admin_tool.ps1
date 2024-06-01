@@ -1,5 +1,4 @@
-﻿function Show-Menu
-{
+﻿function Show-Menu {
      param (
         [string]$Title = 'ADMINISTRACIÓN DEL DATA CENTER'
      )
@@ -18,9 +17,10 @@
      Write-Host ""
 }
 
-function Get-Top-CPU-Processes
-{
-   Get-Process | Sort-Object -Property CPU -desc | Select-Object -First 5 | Format-Table -Property Id, ProcessName, CPU
+function Get-Top-CPU-Processes {
+   Get-Process | Sort-Object -Property CPU -desc | Select-Object -First 5 | 
+   Format-Table -Property Id, ProcessName, CPU -AutoSize
+
 }
 
 function Get-FileSystems-Disk {
@@ -30,8 +30,8 @@ function Get-FileSystems-Disk {
 
     Get-WmiObject -Class Win32_logicaldisk -ComputerName $ComputerName |
     Where-Object {$_.DriveType -eq 2 -or $_.DriveType -eq 3} |
-    Select-Object -Property DeviceID, @{n='Tamaño (Bytes)'; e={$_.Size / 1 -as [int64]}}, 
-    @{n='Espacio Libre (Bytes)'; e={$_.FreeSpace / 1 -as [int64]}} | Format-Table
+    Format-Table -Property DeviceID, @{n='Tamaño (Bytes)'; e={$_.Size / 1 -as [int64]}}, 
+    @{n='Espacio Libre (Bytes)'; e={$_.FreeSpace / 1 -as [int64]}} -AutoSize
 }
 
 function Get-LargestFile {
@@ -49,7 +49,7 @@ function Get-LargestFile {
         # Verificar si hay archivos en el directorio
         if ($Files.Count -ne 0) {
             # Encontrar el archivo más grande
-            $LargestFile = $Files | Sort-Object -Property Length -desc | Select-Object -First 1
+            $LargestFile = $Files | Sort-Object -Property Length -desc | Select-Object -First 1 
 
             Write-Host ""
             Write-Host "Nombre: $($LargestFile.Name)"
@@ -83,12 +83,17 @@ function Get-Memory-Swap-Info {
     $SwapUsage = $SwapInformation.CurrentUsage / 1 -as [int64]
     $SwapUsagePercentage = [Math]::Round(($SwapUsage / $TotalSwap) * 100, 2)
 
+    Write-Host ""
     Write-Host "Memoria libre: $($FreeMemory)"
     Write-Host "Porcentaje de Memoria libre: $($FreeMemoryPercentage.ToString("F2"))%"
     Write-Host "Espacio de Swap en uso: $($SwapUsage)"
     Write-Host "Porcentaje de espacio de Swap en uso: $($SwapUsagePercentage.ToString("F2"))%"
 }
 
+function Get-NetworkConnections {
+    Get-NetTCPConnection | Where-Object {$_.State -eq "Established"} | Measure-Object | 
+    Format-Table -Property @{n="Número de Conexiones con estado ESTABLISHED"; e={$_.Count};Alignment="Center"} -AutoSize
+}
 
 do {
     Show-Menu
@@ -99,13 +104,13 @@ do {
         1 {
             cls
             Write-Host "=========Top 5 procesos por CPU========="
-            Get-Top-CPU-Processes #-AutoSize
+            Get-Top-CPU-Processes
             break
         }
         2 {
             cls
             Write-Host "=========Filesystems y discos========="
-            Get-FileSystems-Disk #-AutoSize
+            Get-FileSystems-Disk
             break
         }
         3 {
@@ -123,6 +128,7 @@ do {
         5 {
             cls
             Write-Host "=========Conexiones de red========="
+            Get-NetworkConnections
             break
         }
         0 {
