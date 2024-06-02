@@ -49,5 +49,5 @@ Ambas herramientas proporcionan un menú con las siguientes opciones:
       ```
       
 ## Autores 👨‍💻👩‍💻
-+ [JuanF2019](https://github.com/JuanF2019)
-+ [DianaSofiaOlano](https://github.com/DianaSofiaOlano)
++ [Juan Fernando Martínez](https://github.com/JuanF2019)
++ [Diana Sofia Olano](https://github.com/DianaSofiaOlano)
