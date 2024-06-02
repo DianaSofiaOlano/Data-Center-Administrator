@@ -39,7 +39,7 @@ Ambas herramientas proporcionan un menú con las siguientes opciones:
       ```
       cd C:\Users\"Username"\Data-Center-Administrator
       ```
-   - Asegúrate de que el archivo **admin_tool.sh** tenga permisos de ejecución. Puedes otorgarlos con el comando:
+   - Asegúrate de que el archivo **admin_tool.sh** tenga permisos de ejecución. Puedes otorgarlos con el siguiente comando:
       ```
       chmod +x admin_tool.sh
       ```
