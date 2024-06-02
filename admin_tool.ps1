@@ -163,31 +163,31 @@ do {
     switch ($option) {
         1 {
             cls
-            Write-Host "=========Top 5 procesos por CPU=========" -ForegroundColor Yellow
+            Write-Host "=========Top 5 procesos por CPU=========" -ForegroundColor Green
             Get-TopCPUProcesses | Format-Table -AutoSize
             break
         }
         2 {
             cls
-            Write-Host "=========Filesystems y discos=========" -ForegroundColor Yellow
+            Write-Host "=========Filesystems y discos=========" -ForegroundColor Green
             Get-FileSystemsDisk | Format-Table -AutoSize
             break
         }
         3 {
             cls
-            Write-Host "=========Archivo más grande=========" -ForegroundColor Yellow
+            Write-Host "=========Archivo más grande=========" -ForegroundColor Green
             Get-LargestFile | Format-List
             break
         }
         4 {
             cls
-            Write-Host "=========Memoria y swap=========" -ForegroundColor Yellow
+            Write-Host "=========Memoria y swap=========" -ForegroundColor Green
             Get-MemorySwapInfo | Format-List
             break
         }
         5 {
             cls
-            Write-Host "=========Conexiones de red=========" -ForegroundColor Yellow
+            Write-Host "=========Conexiones de red=========" -ForegroundColor Green
             Get-NetworkConnections | Format-List
             break
         }
@@ -206,6 +206,5 @@ do {
     #Esto permite al usuario ver la salida en la consola antes de que el script vuelva a mostrar el menú y solicite otra entrada.
     Write-Host ""
     pause
-    Write-Host ""
     cls
 } while ($option -ne 0)
