@@ -21,6 +21,10 @@ Ambas herramientas proporcionan un menú con las siguientes opciones:
 1. Clonar o descargar el repositorio
 2. Para la herramienta en **Powershell**:
    - Abre una ventana de Powershell.
+   - Asegúrate de que el archivo **admin_tool.ps1** tenga permisos de ejecución. Puedes otorgarlos con el siguiente comando **(Ejecuta el comando como administrador)**:
+     ```
+      Set-ExecutionPolicy Unrestricted
+      ```
    - Navega hasta la ubicación donde se encuentra el archivo **admin_tool.ps1**.
       ```
       cd C:\Users\"Username"\Data-Center-Administrator
