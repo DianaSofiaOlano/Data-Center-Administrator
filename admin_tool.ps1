@@ -60,8 +60,7 @@ function Get-FileSystemsDisk {
 
     Get-WmiObject -Class Win32_logicaldisk -ComputerName $ComputerName |
     Where-Object {$_.DriveType -eq 2 -or $_.DriveType -eq 3} |
-    Select-Object -Property DeviceID, @{n='Tamaño(Bytes)'; e={$_.Size / 1 -as [int64]}}, 
-    @{n='Espacio Libre(Bytes)'; e={$_.FreeSpace / 1 -as [int64]}}
+    Select-Object -Property DeviceID, Size, FreeSpace
 }
 
 <#
@@ -92,7 +91,7 @@ function Get-LargestFile {
         if ($Files.Count -ne 0) {
             # Encontrar el archivo más grande
             $LargestFile = $Files | Sort-Object -Property Length -desc | Select-Object -First 1
-            $LargestFile | Select-Object Name, @{n='Tamaño(Bytes)';e={$_.Length / 1 -as [int64]}}, FullName
+            $LargestFile | Select-Object Name, Length, FullName
         }
         else{
             Write-Host ""
@@ -107,7 +106,6 @@ function Get-LargestFile {
     }
 }
 
-
 <#
 .SYNOPSIS
 Obtiene la cantidad de memoria libre y la cantidad de espacio de swap en uso.
@@ -120,15 +118,14 @@ function Get-MemorySwapInfo {
     $SystemInformation = Get-WmiObject -Class Win32_OperatingSystem
     $SwapInformation = Get-WmiObject -Class Win32_PageFileUsage
 
-    #Obtener información de memoria
-    $FreeMemory = $SystemInformation.FreePhysicalMemory / 1 -as [int64]
+    $FreeMemory = $SystemInformation.FreePhysicalMemory * 1024 -as [int64]
     $FreeMemoryPercentage = (($SystemInformation.FreePhysicalMemory / $SystemInformation.TotalVisibleMemorySize) * 100 -as [int])
 
-    #Obtener información de swap
-    $SwapUsage = $SwapInformation.CurrentUsage / 1 -as [int64]
+    $SwapUsage = $SwapInformation.CurrentUsage * 1048576 -as [int32]
     $SwapUsagePercentage = (($SwapInformation.CurrentUsage / $SwapInformation.AllocatedBaseSize) * 100 -as [int])
 
-    # Crear un objeto personalizado
+    # Crear un objeto personalizado para almacenar la información de memoria y swap.
+    # Se utiliza [PSCustomObject] para crear un objeto con propiedades definidas.
     $MemoryInfo = [PSCustomObject]@{
         FreeMemory = $FreeMemory
         FreeMemoryPercentage = "$FreeMemoryPercentage%"
@@ -137,7 +134,6 @@ function Get-MemorySwapInfo {
     }
     return $MemoryInfo
 }
-
 
 <#
 .SYNOPSIS
