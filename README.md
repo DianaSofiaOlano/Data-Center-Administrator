@@ -19,32 +19,34 @@ Ambas herramientas proporcionan un menú con las siguientes opciones:
 
 ## Despliegue local 💻🖱️
 1. Clonar o descargar el repositorio
+   
 2. Para la herramienta en **Powershell**:
    - Abre una ventana de Powershell.
    - Asegúrate de que el archivo **admin_tool.ps1** tenga permisos de ejecución. Puedes otorgarlos con el siguiente comando **(Ejecuta el comando como administrador)**:
-     ```
+     ```bash
       Set-ExecutionPolicy Unrestricted
       ```
    - Navega hasta la ubicación donde se encuentra el archivo **admin_tool.ps1**.
-      ```
+      ```bash
       cd C:\Users\"Username"\Data-Center-Administrator
       ```
    - Ejecuta el archivo usando el comando:
-      ```
+      ```bash
       .\admin_tool.ps1
       ```
+      
 3. Para la herramienta en **BASH**:
    - Abre una terminal.
    - Navega hasta la ubicación donde se encuentra el archivo **admin_tool.sh**.
-      ```
+      ```bash
       cd C:\Users\"Username"\Data-Center-Administrator
       ```
    - Asegúrate de que el archivo **admin_tool.sh** tenga permisos de ejecución. Puedes otorgarlos con el siguiente comando:
-      ```
+      ```bash
       chmod +x admin_tool.sh
       ```
    - Ejecuta el archivo usando el comando:
-      ```
+      ```bash
       ./admin_tool.sh
       ```
       
