@@ -1,4 +1,6 @@
-# Administración de un Data Center 🏢
+<p align="center">
+  <h1 align="center">Administración de un Data Center 🏢</h1>
+</p>
 Este proyecto consta de dos herramientas diseñadas para facilitar las tareas de administración de un data center. Una herramienta está desarrollada en Powershell y la otra en BASH, ambas ofreciendo un conjunto de opciones para obtener información relevante sobre el sistema.
 
 ## Funcionalidades 📃🖋️
@@ -43,5 +45,5 @@ Ambas herramientas proporcionan un menú con las siguientes opciones:
       ```
       
 ## Autores 👨‍💻👩‍💻
-* [JuanF2019](https://github.com/JuanF2019)
-* [DianaSofiaOlano](https://github.com/DianaSofiaOlano)
++ [JuanF2019](https://github.com/JuanF2019)
++ [DianaSofiaOlano](https://github.com/DianaSofiaOlano)
