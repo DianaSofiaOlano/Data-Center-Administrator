@@ -15,36 +15,44 @@ getConnectedDisksAndFilesystems(){
 }
 
 # function getLargestFileInDiskOrFilesystem
-# Despliega el nombre, tamaño y ruta del archivo más grande
+# Despliega la ruta, el nombre y el tamaño del archivo más grande
 # de un disco, filesystem o directorio.
 getLargestFileInDiskOrFilesystem(){
-    if (ls -d $path) then
-        ls -lRA "$1"
-
-        #revisar primera letra que no sea d Ej - con awk
-        #usar script del parcial para la ruta completa y mezclar lo de arriba
-
-        # user=$(whoami)
-        # ls -lR /home | awk -v user=$user 'BEGIN {current_dir=""}
-		# 		  substr($1,1,5)=="/home"\
-		# 		      {current_dir=substr($1,1,length($1)-1)}
-		# 		  $3==user {if(substr($1,4,1)=="x") print current_dir"/"$9}' 
-
+    if ( test -d "$1" ) then
+        if !(test -z "$(ls -A "$1")") then
+            ls -lRA "$1" | awk -v path=$1  'BEGIN {current_dir=""}
+                                BEGIN {current_largest_name=""}
+                                BEGIN {current_largest_path=""}
+                                BEGIN {current_largest_size=0}
+                                substr($1,1,length(path))==path { current_dir=substr($1,1,length($1)-1) }
+                                NF==9 && length($1)==10 && substr($1,1,1)!="d" && current_largest_size<$5 {
+                                        current_largest_size=$5; current_largest_name=$9; current_largest_path=current_dir"/";
+                                        }
+                                END {path_length=length(current_largest_path)}
+                                END {name_length=length(current_largest_name)}
+                                END {size_length=length(current_largest_size)}
+                                END {printf "%-*s %-*s %-*s\n",path_length, "PATH",name_length, "NAME",size_length, "SIZE(B)";
+                                        print current_largest_path, current_largest_name, current_largest_size;
+                                        }'
+        else
+            echo -e "\nEl disco/directorio/filesystem está vacío."
+        fi
     else
-        echo "El disco/directorio/filesystem no existe o no tiene archivos."
+        echo -e "\nEl disco/directorio/filesystem no existe."
     fi    
 }
 
 until [ "$opcion" == "0" ]
 do
     echo -e "\nADMINISTRACIÓN DEL DATA CENTER\n"
+    
     echo "1. Desplegar los cinco procesos que más CPU estén consumiendo en ese momento"
     echo "2. Desplegar los filesystems o discos conectados a la máquina"
     echo "3. Desplegar el nombre y el tamaño del archivo más grande almacenado en un disco o filesystem"
     echo "4. Cantidad de memoria libre y cantidad del espacio de swap en uso"
     echo "5. Número de conexiones de red activas actualmente (en estado ESTABLISHED)"
     echo "0. Salir"
-         
+    echo -e "\nPor favor seleccione la operación que desea realizar:"
     read -p ">>> " opcion
 
 	case $opcion in
@@ -57,8 +65,9 @@ do
 			;;
 
 		3)
-            echo "Escriba la ruta del directorio/disco/filesystem de su interés"
+            echo "Escriba la ruta del directorio/disco/filesystem de su interés:"
             read -p ">>> " path
+            echo ""
 			getLargestFileInDiskOrFilesystem $path
             ;;
 
@@ -71,9 +80,6 @@ do
 			;;
 
 		0)
-            echo "=================================="
-            echo "            Saliendo              "
-            echo "=================================="
             exit 0
             ;;
 		*)
