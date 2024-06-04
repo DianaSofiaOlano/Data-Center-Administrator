@@ -22,7 +22,7 @@ Ambas herramientas proporcionan un menú con las siguientes opciones:
    
 2. Para la herramienta en **Powershell**:
    - Abre una ventana de Powershell.
-   - Asegúrate de que el archivo **admin_tool.ps1** tenga permisos de ejecución. Puedes otorgarlos con el siguiente comando **(Ejecuta el comando como administrador)**:
+   - Asegúrate de que PowerShell tenga permisos para ejecutar scripts. Puedes otorgarlos con el siguiente comando **(Ejecuta el comando como administrador)**:
      ```bash
       Set-ExecutionPolicy Unrestricted
       ```
