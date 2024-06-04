@@ -31,7 +31,7 @@ getLargestFileInDiskOrFilesystem(){
                                 END {path_length=length(current_largest_path)}
                                 END {name_length=length(current_largest_name)}
                                 END {size_length=length(current_largest_size)}
-                                END {printf "%-*s %-*s %-*s\n",path_length, "PATH",name_length, "NAME",size_length, "SIZE(B)";
+                                END {printf "%-*s %-*s %-*s\n",path_length, "RUTA",name_length, "NOMBRE",size_length, "TAMAÑO(B)";
                                         print current_largest_path, current_largest_name, current_largest_size;
                                         }'
         else
@@ -41,6 +41,33 @@ getLargestFileInDiskOrFilesystem(){
         echo -e "\nEl disco/directorio/filesystem no existe."
     fi    
 }
+
+# function getAvailableMemoryMainAndSwap
+# Returns the total (bytes) and used (bytes and %)
+# main and swap memory.
+getAvailableMemoryMainAndSwap(){
+    free | awk 'BEGIN {total_main=0; used_main=0; pct_used_main=0; total_swap=0; used_swap=0; pct_used_swap=0}
+                $1=="Mem:"{total_main=$2; used_main=$3; pct_used_main=(used_main/total_main)*100}
+                $1=="Swap:"{total_swap=$2; used_swap=$3; pct_used_swap=(used_swap/total_swap)*100}
+                END {bytes_length = (total_main>total_swap)?length(sprintf("%d", total_main)):length(sprintf("%d", total_swap))}
+                END {bytes_length += 3 }                
+                END {printf "%-10s %-*s %-*s %-7s\n","     ",bytes_length,"TOTAL(B)",bytes_length,"EN USO(B)","EN USO(%)"}
+                END {printf "%-10s %-*d %-*d %-7.1f\n","Principal:",bytes_length,total_main,bytes_length,used_main,pct_used_main}
+                END {printf "%-10s %-*d %-*d %-7.1f\n","Swap:",bytes_length,total_swap,bytes_length,used_swap,pct_used_swap}'
+}      
+
+# function getCountActiveNetworkConnections
+# Returns the number of active network connections.
+getCountActiveNetworkConnections(){
+    if !([ -z "$(netstat)" ]) then
+        netstat | awk 'BEGIN {total_established=0}
+                       $5=="ESTABLISHED"{total_established += 1}
+                       END {print "\nTotal conexiones de red activas:",total_established}'
+    else
+        echo -e "\nPor favor instale el paquete net-tools antes de utilizar esta opción.\n"
+    fi
+}
+
 
 until [ "$opcion" == "0" ]
 do
@@ -72,11 +99,12 @@ do
             ;;
 
 		4)
-			echo 4
+			
+            getAvailableMemoryMainAndSwap
             ;;
 
 		5)
-			echo 5
+			getCountActiveNetworkConnections
 			;;
 
 		0)
