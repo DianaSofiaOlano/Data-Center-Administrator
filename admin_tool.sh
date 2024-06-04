@@ -59,13 +59,9 @@ getAvailableMemoryMainAndSwap(){
 # function getCountActiveNetworkConnections
 # Returns the number of active network connections.
 getCountActiveNetworkConnections(){
-    if !([ -z "$(netstat)" ]) then
-        netstat | awk 'BEGIN {total_established=0}
-                       $5=="ESTABLISHED"{total_established += 1}
-                       END {print "\nTotal conexiones de red activas:",total_established}'
-    else
-        echo -e "\nPor favor instale el paquete net-tools antes de utilizar esta opción.\n"
-    fi
+    ss | awk 'BEGIN {total_established=0}
+                   $2=="ESTAB"{total_established += 1}
+                   END {print "\nTotal conexiones de red activas:",total_established}'
 }
 
 
